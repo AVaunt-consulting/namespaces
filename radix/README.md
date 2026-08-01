@@ -2,45 +2,83 @@
 namespace-identifier: radix
 title: Radix DLT
 author: ["Avaunt (@AVaunt-consulting)"]
+# discussions-to: add URL of the namespaces PR (or a GitHub Discussion) once opened
 status: Draft
 type: Informational
 created: 2026-07-28
-requires: ["CAIP-2"]
+requires: ["CAIP-2", "CAIP-10", "CAIP-19"]
 ---
 
-# Namespace for {non-technical name for ecosystem or family of chains}
+# Namespace for Radix DLT
 
-<!--"If you can't explain it simply, you don't understand it well enough." Provide a simplified and layman-accessible explanation of the CAIP.-->
-As the old saying goes, "If you can't explain it simply, you don't understand it
-well enough." Here is where you can provide a simplified and layman-accessible
-explanation of what is particular to this namespace or how it differs from EVM
-chains, where the CAIPs are easiest to apply/understand.
+Radix is a layer-1 network purpose-built for decentralized finance, currently
+running the "Babylon" protocol generation (live since September 2023). It is
+not EVM-compatible: transactions execute in the Radix Engine, an
+asset-oriented execution environment in which tokens ("resources") are native
+primitives held in accounts rather than balances inside contract storage.
+Transactions are expressed as human-readable "transaction manifests" over an
+intent-based transaction model, and are signed by zero or more signatories
+before being notarized and submitted.
+
+Radix uses deterministic finality (HotStuff-style BFT): committed transactions
+are final, and there are no probabilistic forks. The ledger is a stream of
+transactions broken into epochs of roughly five minutes rather than blocks.
+
+All Radix entity addresses (accounts, resources, components, packages) are
+bech32m-encoded strings whose human-readable part (HRP) is the concatenation
+of an *entity specifier* (e.g. `account_`, `resource_`) and a *network
+specifier* (`rdx` for mainnet, `tdx_2_` for the Stokenet public testnet),
+making every address self-describing and network-bound.
 
 ## Rationale
-<!--A short (~200 word) description of the technical issue being addressed.-->
-A short (~200 word) description of any technical issues being addressed by the
-naming of the namespace, or other informational asides about the particularities
-of the namespace.
+
+The namespace identifier `radix` is the network's common name, used across its
+documentation, tooling, and deep links (e.g. the `radix:<address>` deposit QR
+convention). Networks in this namespace are the Radix Babylon networks: one
+production mainnet and a small, governed set of test networks, each defined by
+a numeric network ID, a logical name, and an address HRP suffix:
+
+| Network  | Network ID | Logical name | HRP network specifier |
+| -------- | ---------- | ------------ | --------------------- |
+| Mainnet  | `1`        | `mainnet`    | `rdx`                 |
+| Stokenet | `2`        | `stokenet`   | `tdx_2_`              |
+
+The earlier "Olympia" network generation (2021–2023) was retired when its end
+state was migrated into Babylon's genesis; Olympia used different address
+encodings and is out of scope for this namespace.
 
 ## Governance
-<!--A short (~200 word) description of the improvement proposal process or other specification/governance context that a first-time implementer of cross-chain work in this namespace/ecosystem should know.-->
-A short (~200 word) description of the improvement proposal process or other
-specification/governance context that a first-time implementer of cross-chain
-work in this namespace/ecosystem should know.
+
+The Radix protocol and its reference node implementation are developed by RDX
+Works and stewarded by the Radix Foundation. Protocol changes ship as named
+"protocol updates" (e.g. "Anemone", "Bottlenose", "Cuttlefish") which are
+enacted at epoch boundaries once a supermajority of validator stake signals
+readiness. There is no on-chain permissionless improvement-proposal process;
+specifications and integrator guidance are published in the official
+documentation and the open-source node and toolkit repositories.
 
 ## References
-<!--Links to external resources that help understanding the CAIP better. This can e.g. be links to existing implementations.-->
-Links to external resources that help understanding the namespace or the
-specification/applied-CAIP better in this context. This can also include links
-to existing implementations.
 
-The preferred format, for browser-rendering and long-term maintenance, is a
-bulletted list of [Name][] links (rather than classical [Name](referent) links),
-followed by ` - ` and a summary or explanation of the content.  In a separate
-section below, add the name-referent pairs in the `[Name]: https://{referent} `
-format-- this will be invisible in any Github-flavored Markdown rendering
-(including jekyll/github pages, aka github.io, but also docusaurus and many
-dev-docs rendering engines).
+- [Radix Documentation][] - official developer and integrator documentation.
+- [Radix Integrator Concepts][] - addresses, networks, transactions, and API guidance for integrators.
+- [Well-Known Addresses][] - canonical registry of native addresses (XRD, badges, packages) per network, including each network's ID and HRP suffix.
+- [Address Concepts][] - bech32m address structure: entity specifier, network specifier, and 30-byte payload.
+- [Babylon Node][] - reference node implementation (Java/Rust).
+- [Radix Engine Toolkit][] - offline transaction construction and address derivation/validation library (Rust core; TypeScript, Python and other bindings).
+- [Gateway API][] - indexed network API used by wallets and dashboards.
+- [Core API][] - node-local API for integrators running their own node.
+- [Radix Dashboard][] - the network explorer.
+
+[Radix Documentation]: https://docs.radixdlt.com/
+[Radix Integrator Concepts]: https://docs.radixdlt.com/docs/concepts
+[Well-Known Addresses]: https://docs.radixdlt.com/docs/well-known-addresses
+[Address Concepts]: https://docs.radixdlt.com/docs/concepts
+[Babylon Node]: https://github.com/radixdlt/babylon-node
+[Radix Engine Toolkit]: https://github.com/radixdlt/radix-engine-toolkit
+[Gateway API]: https://radix-babylon-gateway-api.redoc.ly/
+[Core API]: https://radix-babylon-core-api.redoc.ly/
+[Radix Dashboard]: https://dashboard.radixdlt.com/
 
 ## Copyright
+
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).

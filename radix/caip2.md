@@ -1,103 +1,118 @@
 ---
-namespace-identifier: <{name of folder}-caip2>
-title: <{namespace common name} [, aka ecosystem name] - Blockchain ID Specification>
-author: <["FirstName1 LastName1 (@GitHubUsername1)", "AnonHandle2 <foo2@bar.com>"]>
-discussions-to: <URL of PR, mailing list, etc>
+namespace-identifier: radix-caip2
+title: Radix DLT Namespace - Chains
+author: ["Avaunt (@AVaunt-consulting)"]
+# discussions-to: add URL of the namespaces PR (or a GitHub Discussion) once opened
 status: Draft
-type: Informational
-created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
-requires (*optional): CAIP-2
+type: Standard
+created: 2026-08-01
+requires: CAIP-2
 ---
-
-<!--You can leave these HTML comments in your merged CAIP and delete the 
- visible duplicate text guides, they will not appear and may be helpful to 
- refer to if you edit it again. This is the suggested template for new CAIPs.
- Note that an CAIP number will be assigned by an editor. When opening a pull
- request to submit your EIP, please use an abbreviated title in the 
- filename, `caipX.md`, all lowercase, no `-` between the CAIP and its 
- number.-->
 
 # CAIP-2
 
 *For context, see the [CAIP-2][] specification.*
 
-## Introduction 
-
-<!--"If you can't explain it simply, you don't understand it well enough." 
-Provide a simplified and layman-accessible explanation of the identifier system 
-used in this namespace, i.e., the system for addressing and disambiguating 
-individual chains or other stable corpuses of data (shards, regions, lineages, 
-epochs, etc.). Caveats or mental model differences from other common ID systems 
-can be mentioned here upfront, but not implementation details like validation, 
-confirmation from a live connection.-->
-
-## Specification
-
-### Semantics
-
-<!-- Explain (and refer to/add links in the `## References` section) any inputs 
-or namespace-specific constructs needed to generate or interpret the valid 
-possible values of a CAIP-2 in this namespace. -->
-
-### Syntax
-
-<!-- Explain the actual algorithm or transformation needed to transform inputs into a
-conformant and unique CAIP deterministically.  Consider including a regular
-expression for validation as well, as some consumers or toolmakers may want to
-support this CAIP without a deep understanding of any specifications, devdocs,
-or improvement proposals on which this specification depends. If there are 
-canonicalization guarantees, checksums, or other assumptions in the native format, 
-explain how they exist (or can be made to exist) in the CAIP-2 equivalent as well. -->
-
-### Resolution Mechanics
-
-<!-- Many blockchain systems allow for transactions, asset-states, etc. to be
-validated against the chain they are targeting or depending to to avoid replay
-attacks or other unintended outcomes. This is often done by an API or RPC call
-to a node to validate the targetted chain or network. Include a sample
-request/response and add the relevant documentation to the `## References`
-section below if possible, as well as an explanation of any steps needed to
-validate the results, calculate checksums, persist session metadata or nonces,
- etc. -->
-
 ## Rationale
 
-<!-- Explain here how the mapping or translation between native identifiers and
-CAIP-2 identifiers was arrived at, history and pre-history, etc.-->
+Radix Babylon networks are few and centrally registered: one production
+mainnet and a small set of persistent test networks. Each network is defined
+in the node software by three coupled identifiers: a numeric **network ID**
+(`1` for mainnet, `2` for Stokenet), a **logical name** (`mainnet`,
+`stokenet`), and an **HRP network specifier** used inside every address on
+that network (`rdx`, `tdx_2_`).
 
-### Backwards Compatibility
+This profile uses the **logical name** as the CAIP-2 reference. The logical
+name is the identifier integrators already pass in the `network` field of
+every Core API request, it is human-readable, and the set of networks is
+small and governed, so collisions are not a practical concern (the same
+reasoning used by the `hedera` and `stellar` namespaces).
 
-<!-- If earlier CAIPs or earlier stages in the governance of the namespace created
-legacy identifiers that break or extend the specification above, please add a
-section for "Legacy" compatibility and an explanation of what contexts and/or
-what time-frames would require catching those cases.-->
+## Syntax
+
+The reference SHOULD be populated with one of the following enumerated
+logical network names:
+
+- `mainnet` — Radix mainnet (network ID `1`)
+- `stokenet` — the primary public testnet (network ID `2`)
+
+Other logical names defined by the node software (e.g. transient test
+networks with HRP specifier `tdx_<hex_id>_`, or `simulator` for the local
+`resim` simulator, network ID `242`) follow the same pattern.
+
+A regular expression for validating any theoretically possible Radix
+network reference is:
+
+```
+radix:[a-z0-9]{1,32}
+```
+
+### Resolution Method
+
+To resolve the network of a node or gateway, query its network configuration
+endpoint and compare the returned logical name and network ID:
+
+- Gateway API: `POST /status/network-configuration`
+- Core API (own node): `POST /core/status/network-configuration`
+
+Example response (mainnet gateway, abbreviated):
+
+```json
+{
+  "network_id": 1,
+  "network_name": "mainnet",
+  "well_known_addresses": {
+    "xrd": "resource_rdx1tknxxxxxxxxxradxrdxxxxxxxxx009923554798xxxxxxxxxradxrd"
+  }
+}
+```
+
+Addresses themselves are also network-bound: every bech32m address embeds the
+network's HRP specifier (`rdx`, `tdx_2_`), and its 6-character checksum is
+computed over the HRP, so an address valid on one network is invalid on every
+other network.
+
+## Backwards Compatibility
+
+The retired Olympia network generation (2021–2023) used different address
+formats and APIs; its end state was migrated into Babylon's genesis. Olympia
+is not addressable in this namespace.
 
 ## Test Cases
 
-<!-- A list of manually-composed and validated examples is the **most important**
-section, and by far the most read! be sure to check often that this stays in sync
-with any changes or additions in the preceding sections. -->
+This is a list of manually composed examples:
 
-## Additional Considerations (*OPTIONAL)
+```
+# Radix mainnet
+radix:mainnet
 
-<!-- Future topics? Upcoming protocol upgrades that will require new specifications,
-in the namespace and/or in the CAIPs? -->
+# Radix Stokenet (primary public testnet)
+radix:stokenet
+```
+
+## Additional Considerations
+
+### Rejected idea: numeric network-ID references
+
+Using the numeric network ID as the reference (`radix:1`, `radix:2`) was
+considered and rejected: the logical name is what Radix APIs accept in
+request bodies, what node configuration files use, and what integrators see
+in documentation, whereas the numeric ID appears mainly inside transaction
+headers. Both identifiers are listed in the table in the
+[namespace README](README.md) so either can be derived from the other.
 
 ## References
 
-<!-- Links to external resources that help understanding the namespace or the
-specification/applied-CAIP better in this context. This can also include links
-to existing implementations.
-
-The preferred format, for browser-rendering and long-term maintenance, is a
-bulletted list of [Name][] links (rather than classical [Name](referent) links),
-followed by ` - ` and a summary or explanation of the content.  In a separate
-section below, add the name-referent pairs in the `[Name]: https://{referent} `
-format-- this will be invisible in any Github-flavored Markdown rendering
-(including jekyll/github pages, aka github.io, but also docusaurus and many
-dev-docs rendering engines). -->
+- [Radix Networks][] - network IDs, logical names, gateway URLs and native addresses per network.
+- [Well-Known Addresses][] - canonical per-network address registry including `network_id` and `network_hrp_suffix`.
+- [Gateway API][] - `/status/network-configuration` endpoint documentation.
+- [Core API][] - node-local equivalent for integrators running their own node.
 
 [CAIP-2]: https://chainagnostic.org/CAIPs/caip-2
+[Radix Networks]: https://docs.radixdlt.com/docs/network-setup
+[Well-Known Addresses]: https://docs.radixdlt.com/docs/well-known-addresses
+[Gateway API]: https://radix-babylon-gateway-api.redoc.ly/
+[Core API]: https://radix-babylon-core-api.redoc.ly/
 
 ## Copyright
 
