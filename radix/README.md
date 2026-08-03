@@ -49,9 +49,8 @@ encodings and is out of scope for this namespace.
 
 ## Governance
 
-The Radix protocol and its reference node implementation are developed by RDX
-Works and stewarded by the Radix Foundation. Protocol changes ship as named
-"protocol updates" (e.g. "Anemone", "Bottlenose", "Cuttlefish") which are
+The Radix protocol and its reference node implementation were originally developed by RDX Works and stewarded by the Radix Foundation. RDX Works has since disbanded and protocol changes are now governed and maintained by the Radix Foundation. Note: As of 3rd August 2026 a Marshall Islands DAO is currently being created with the intention of the Radix Foundation handing over IP, Crypto assets and relevant accounts to the Marshall Islands DAO. The creation of the DAO is expected to be completed before the end of 2026.
+Protocol changes ship as named "protocol updates" (e.g. "Anemone", "Bottlenose", "Cuttlefish") which are
 enacted at epoch boundaries once a supermajority of validator stake signals
 readiness. There is no on-chain permissionless improvement-proposal process;
 specifications and integrator guidance are published in the official
