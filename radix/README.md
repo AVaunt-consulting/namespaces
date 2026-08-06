@@ -2,7 +2,7 @@
 namespace-identifier: radix
 title: Radix DLT
 author: ["Avaunt (@AVaunt-consulting)"]
-# discussions-to: add URL of the namespaces PR (or a GitHub Discussion) once opened
+discussions-to: https://github.com/ChainAgnostic/namespaces/pull/198
 status: Draft
 type: Informational
 created: 2026-07-28

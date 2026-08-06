@@ -2,7 +2,7 @@
 namespace-identifier: radix-caip10
 title: Radix DLT Namespace - Accounts
 author: ["Avaunt (@AVaunt-consulting)"]
-# discussions-to: add URL of the namespaces PR (or a GitHub Discussion) once opened
+discussions-to: https://github.com/ChainAgnostic/namespaces/pull/198
 status: Draft
 type: Standard
 created: 2026-08-01
