@@ -47,6 +47,17 @@ network reference is:
 radix:[a-z0-9]{1,32}
 ```
 
+This is deliberately narrower than the generic [CAIP-2][] reference charset
+(`[-_a-zA-Z0-9]{1,32}`): Radix logical network names consist only of
+lowercase letters and digits, so a valid reference never contains a character
+that would require escaping. Percent-encoding is not applicable at this
+layer — `%` is not a legal character in [CAIP-2][] references (unlike
+[CAIP-10][] account addresses and [CAIP-19][] asset references, whose
+charsets were later revised to include `%` for URL-encoding). Percent-encoding
+considerations that *do* apply to this namespace — the underscores in native
+Radix addresses — are specified in the [CAIP-10 Profile](./caip10.md) and
+[CAIP-19 Profile](./caip19.md).
+
 ### Resolution Method
 
 To resolve the network of a node or gateway, query its network configuration
@@ -109,6 +120,8 @@ headers. Both identifiers are listed in the table in the
 - [Core API][] - node-local equivalent for integrators running their own node.
 
 [CAIP-2]: https://chainagnostic.org/CAIPs/caip-2
+[CAIP-10]: https://chainagnostic.org/CAIPs/caip-10
+[CAIP-19]: https://chainagnostic.org/CAIPs/caip-19
 [Radix Networks]: https://docs.radixdlt.com/docs/network-setup
 [Well-Known Addresses]: https://docs.radixdlt.com/docs/well-known-addresses
 [Gateway API]: https://radix-babylon-gateway-api.redoc.ly/
